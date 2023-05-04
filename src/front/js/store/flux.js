@@ -44,8 +44,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 				};
 
-				
-
 				try {
 					const resp = await fetch('https://catalinascheleff-miniature-journey-66p9jxgj9ggh5ggw-3001.preview.app.github.dev/api/token', opts)
 					if (resp.status !== 200) {
@@ -64,11 +62,40 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			signup: async (email, password) => {
+				const opts = {
+					method: 'POST',
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						"email": email,
+						"password": password
+					})
+				};
+			
+				try {
+					const resp = await fetch('https://catalinascheleff-miniature-journey-66p9jxgj9ggh5ggw-3001.preview.app.github.dev/api/signup', opts)
+					if (resp.status !== 200) {
+						alert("There has been some error");
+						return false;
+					}
+			
+					const data = await resp.json();
+					console.log("this came from the backend", data)
+					sessionStorage.setItem("token", data.access_token)
+					setStore({ token: data.access_token })
+					return true;
+				}
+				catch (error) {
+					console.error("There has been an error signing up", error)
+				}
+			},			  
 			
 			getMessage: () => {
-
 				const store = getStore();
 				const opts = {
+					method:'GET',
 					headers: {
 						"Authorization": "Bearer " + store.token
 					}
